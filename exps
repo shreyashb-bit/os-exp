@@ -1,506 +1,245 @@
-Exp 2
-#!/bin/bash
+Exp 1
+# Import Libraries
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
 
-echo "OS Version and Release:"
-cat /etc/os-release
+#Load Iris Dataset
+iris = load_iris()
 
-echo "Kernel Version: $(uname -r)"
+#Create DataFrame
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
 
-echo
-echo "Top 10 Processes by CPU Usage:"
-ps -eo pid,ppid,cmd,%cpu --sort=-%cpu | head -n 11
+# Add Species Column
+df['Species'] = iris.target
+df['Species'] = df['Species'].map({
+0: 'Setosa',
+1: 'Versicolor',
+2: 'Virginica'
+})
 
-echo
-echo "Top 10 Processes by Memory Usage:"
-ps -eo pid,ppid,cmd,%mem --sort=-%mem | head -n 11
+#Display First Five Records
+print(df.head())
 
-echo
-echo "Current Logged-in User:"
-whoami
+#Dataset Information
+print(df.info())
 
-echo "Login Name:"
-logname
+# Shape of Dataset
+print("Shape:", df.shape)
 
-echo
-echo "Current Shell: $SHELL"
-echo "Home Directory: $HOME"
-echo "Operating System Type: $OSTYPE"
-echo "PATH Setting: $PATH"
-echo "Current Working Directory: $(pwd)"
+#Missing Values
+print(df.isnull().sum())
+
+#Statistical Summary
+print(df.describe())
+
+# Histogram
+df.hist(figsize=(8,6))
+plt.show()
+
+#Box Plot
+plt.figure(figsize=(8,5))
+sns.boxplot(data=df.iloc[:,:4])
+plt.show()
+
+#Pair Plot
+sns.pairplot(df, hue="Species")
+plt.show()
+
+#Correlation Heatmap
+plt.figure(figsize=(6,5))
+sns.heatmap(df.iloc[:,:4].corr(), annot=True, cmap="coolwarm")
+plt.show()
+
+
+exp 2
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Generate random samples
+normal_data = np.random.normal(loc=50, scale=10, size=1000)
+binomial_data = np.random.binomial(n=10, p=0.5, size=1000)
+poisson_data = np.random.poisson(lam=5, size=1000)
+
+# Normal Distribution
+plt.figure(figsize=(6,4))
+sns.histplot(normal_data, kde=True)
+plt.title("Normal Distribution")
+plt.xlabel("Value")
+plt.ylabel("Frequency")
+plt.show()
+
+# Binomial Distribution
+plt.figure(figsize=(6,4))
+sns.histplot(binomial_data, bins=11)
+plt.title("Binomial Distribution")
+plt.xlabel("Number of Successes")
+plt.ylabel("Frequency")
+plt.show()
+
+# Poisson Distribution
+plt.figure(figsize=(6,4))
+sns.histplot(poisson_data)
+plt.title("Poisson Distribution")
+plt.xlabel("Events")
+plt.ylabel("Frequency")
+plt.show()
+
 
 Exp 3
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-int main() {
-int src = open("source.txt", O_RDONLY);
-int dest = open("dest.txt", O_WRONLY | O_CREAT, 0644);
-char bu er[100];
-int n;
-while ((n = read(src, bu er, sizeof(bu er))) > 0) {
-write(dest, bu er, n);
-}
-close(src);
-close(dest);
-printf("File copied\n");
-return 0;
-}
-
-Exp 4
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/wait.h>
-int main() {
-int pid = fork();
-if (pid == 0) {
-printf("Child PID: %d\n", getpid());
-printf("Parent PID: %d\n", getppid());
-} else {
-wait(NULL);
-printf("Parent Process\n");
-}
-return 0;
-}
-
-
-Exp 5
-#include <stdio.h>
-
-int main() {
-    int n, bt[20], wt[20], tat[20];
-    float avg_wt = 0, avg_tat = 0;
-
-    printf("Enter total number of processes: ");
-    scanf("%d", &n);
-
-    // Input validation
-    if (n <= 0 || n > 20) {
-        printf("Invalid number of processes (1–20 only)\n");
-        return 0;
-    }
-
-    printf("Enter Process Burst Time:\n");
-    for (int i = 0; i < n; i++) {
-        printf("P[%d]: ", i + 1);
-        scanf("%d", &bt[i]);
-    }
-
-    // Waiting time calculation (optimized O(n))
-    wt[0] = 0;
-    for (int i = 1; i < n; i++) {
-        wt[i] = wt[i - 1] + bt[i - 1];
-    }
-
-    printf("\nProcess\tBurst Time\tWaiting Time\tTurnaround Time\n");
-
-    // Turnaround time calculation
-    for (int i = 0; i < n; i++) {
-        tat[i] = bt[i] + wt[i];
-        avg_wt += wt[i];
-        avg_tat += tat[i];
-
-        printf("P[%d]\t%d\t\t%d\t\t%d\n",
-               i + 1, bt[i], wt[i], tat[i]);
-    }
-
-    avg_wt /= n;
-    avg_tat /= n;
-
-    printf("\nAverage Waiting Time: %.2f", avg_wt);
-    printf("\nAverage Turnaround Time: %.2f\n", avg_tat);
-
-    return 0;
-}
-
-
-Exp 6
-#include <stdio.h>
-
-int main() {
-    int n, i, time = 0, remain, tq;
-    int bt[10], rt[10];
-    float avg_wt = 0, avg_tat = 0;
-
-    printf("Enter Total Number of Processes: ");
-    scanf("%d", &n);
-
-    if (n <= 0 || n > 10) {
-        printf("Invalid number of processes (1–10 only)\n");
-        return 0;
-    }
-
-    remain = n;
+# ==========================================================
+# Tests Included:
+# 1. One-Way ANOVA
+# 2. Chi-Square Test
+# ==========================================================
+
+from scipy.stats import f_oneway, chi2_contingency
+
+alpha = 0.05
+
+while True:
+    print("\n========== HYPOTHESIS TESTING ==========")
+    print("1. One-Way ANOVA")
+    print("2. Chi-Square Test")
+    print("3. Exit") 
+
+    choice = input("\nEnter your choice: ")
+    # ---------------------------------------------------
+    # ONE-WAY ANOVA
+    # ---------------------------------------------------
+    if choice == "1":
+        print("\n------ ONE-WAY ANOVA ------")
+        # Sample Marks of Three Classes
+        group1 = [68, 72, 65, 70, 75, 71, 69, 74]
+        group2 = [78, 80, 76, 82, 79, 81, 77, 84]
+        group3 = [60, 64, 62, 65, 61, 63, 66, 67]
+        f_stat, p_value = f_oneway(group1, group2, group3)
+        print("F-Statistic :", round(f_stat, 4))
+        print("P-Value :", round(p_value, 6))
+        if p_value < alpha:
+            print("\nDecision : Reject Null Hypothesis")
+            print("Conclusion : At least one group mean is signific
+        else:
+            print("\nDecision : Fail to Reject Null Hypothesis")
+            print("Conclusion : No significant difference among the
+        # ---------------------------------------------------
+        # CHI-SQUARE TEST
+        # ---------------------------------------------------
+        elif choice == "2":
+            print("\n------ CHI-SQUARE TEST ------")
+            # Contingency Table
+            table = [
+                [30, 20],
+                [15, 35]
+            ]
+            chi2, p_value, dof, expected = chi2_contingency(table)
+            print("Chi-Square Statistic :", round(chi2, 4))
+            print("Degrees of Freedom :", dof)
+            print("P-Value :", round(p_value, 6))
+            print("\nExpected Frequencies")
+            for row in expected:
+                print([round(value, 2) for value in row])
+            if p_value < alpha:
+                print("\nDecision : Reject Null Hypothesis")
+                print("Conclusion : Variables are associated.")
+            else:
+                print("\nDecision : Fail to Reject Null Hypothesis")
+                print("Conclusion : Variables are independent.")
+    # ---------------------------------------------------
+    # EXIT
+    # ---------------------------------------------------
+    elif choice == "3":
+        print("\nProgram Ended.")
+        break
+    else:
+        print("\nInvalid Choice! Please try again.")
+
+
+exp 4
+import numpy as np
+from scipy.stats import f_oneway, kruskal
+
+# Three groups of student marks
+group1 = [78, 82, 85, 90, 88]
+group2 = [65, 70, 72, 68, 66]
+group3 = [90, 92, 95, 94, 91]
+
+# -----------------------------
+# One-Way ANOVA
+# -----------------------------
+
+f_stat, p_value = f_oneway(group1, group2, group3)
+
+print("===== ONE WAY ANOVA =====")
+print("F Statistic :", round(f_stat, 4))
+print("P Value :", round(p_value, 4))
+
+if p_value < 0.05:
+   print("Reject Null Hypothesis")
+   print("Means are significantly different")
+else:
+   print("Fail to Reject Null Hypothesis")
+   print("Means are similar")
+
+# -----------------------------
+# Kruskal-Wallis Test
+# -----------------------------
+
+h_stat, p_value = kruskal(group1, group2, group3)
+
+print("\n===== KRUSKAL-WALLIS TEST =====")
+print("H Statistic :", round(h_stat, 4))
+print("P Value :", round(p_value, 4))
 
-    // Input burst times
-    for (i = 0; i < n; i++) {
-        printf("Enter Burst Time for P[%d]: ", i + 1);
-        scanf("%d", &bt[i]);
-        rt[i] = bt[i]; // Remaining time
-    }
+if p_value < 0.05:
+   print("Reject Null Hypothesis")
+   print("Groups differ significantly")
+else:
+   print("Fail to Reject Null Hypothesis")
+   print("No significant difference")
 
-    printf("Enter Time Quantum: ");
-    scanf("%d", &tq);
 
-    printf("\nProcess\tTurnaround Time\tWaiting Time\n");
+exp 5
+import numpy as np
+from scipy.stats import pearsonr
+from sklearn.linear_model import LinearRegression
 
-    // Round Robin Scheduling
-    while (remain != 0) {
-        for (i = 0; i < n; i++) {
-            if (rt[i] > 0) {
-                if (rt[i] <= tq) {
-                    time += rt[i];
-                    rt[i] = 0;
-                    remain--;
+# Independent Variable (Study Hours)
+X = np.array([1,2,3,4,5,6,7,8,9,10]).reshape(-1,1)
 
-                    int tat = time;
-                    int wt = tat - bt[i];
+# Dependent Variable (Marks)
+Y = np.array([35,40,50,55,65,70,75,85,90,95])
 
-                    printf("P[%d]\t\t%d\t\t%d\n", i + 1, tat, wt);
+# -----------------------------------
+# Correlation Analysis
+# -----------------------------------
+r, p = pearsonr(X.flatten(), Y)
 
-                    avg_wt += wt;
-                    avg_tat += tat;
-                } else {
-                    time += tq;
-                    rt[i] -= tq;
-                }
-            }
-        }
-    }
+print("===== CORRELATION =====")
+print("Correlation Coefficient (r):", round(r,4))
+print("P-value:", round(p,4))
 
-    printf("\nAverage Waiting Time = %.2f", avg_wt / n);
-    printf("\nAverage Turnaround Time = %.2f\n", avg_tat / n);
+if p < 0.05:
+    print("Significant Correlation Exists")
+else:
+    print("No Significant Correlation")
 
-    return 0;
-}
+# -----------------------------------
+# Linear Regression
+# -----------------------------------
+model = LinearRegression()
+model.fit(X, Y)
 
+print("\n===== LINEAR REGRESSION =====")
+print("Slope :", round(model.coef_[0],4))
+print("Intercept :", round(model.intercept_,4))
 
-Exp 7
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <unistd.h>
-#include <time.h>
+predicted = model.predict([[11]])
 
-#define BUFFER_SIZE 5
+print("Predicted Marks for 11 Study Hours :", round(predicted[0],2)
 
-int buffer[BUFFER_SIZE];
-int in = 0;
-int out = 0;
+score = model.score(X,Y)
 
-sem_t empty;  // empty slots
-sem_t full;   // filled slots
-sem_t mutex;  // mutual exclusion
-
-// Producer
-void *producer(void *arg) {
-    int item;
-
-    for (int i = 0; i < 10; i++) {
-        item = rand() % 100;
-
-        sem_wait(&empty);
-        sem_wait(&mutex);
-
-        buffer[in] = item;
-        printf("Produced: %d at index %d\n", item, in);
-
-        in = (in + 1) % BUFFER_SIZE;
-
-        sem_post(&mutex);
-        sem_post(&full);
-
-        sleep(rand() % 2 + 1);  // random delay
-    }
-
-    return NULL;
-}
-
-// Consumer
-void *consumer(void *arg) {
-    int item;
-
-    for (int i = 0; i < 10; i++) {
-        sem_wait(&full);
-        sem_wait(&mutex);
-
-        item = buffer[out];
-        printf("Consumed: %d from index %d\n", item, out);
-
-        out = (out + 1) % BUFFER_SIZE;
-
-        sem_post(&mutex);
-        sem_post(&empty);
-
-        sleep(rand() % 3 + 1);  // random delay
-    }
-
-    return NULL;
-}
-
-int main() {
-    pthread_t prod, cons;
-
-    srand(time(NULL));  // seed random numbers
-
-    // Initialize semaphores
-    sem_init(&empty, 0, BUFFER_SIZE);
-    sem_init(&full, 0, 0);
-    sem_init(&mutex, 0, 1);
-
-    // Create threads
-    pthread_create(&prod, NULL, producer, NULL);
-    pthread_create(&cons, NULL, consumer, NULL);
-
-    // Wait for threads
-    pthread_join(prod, NULL);
-    pthread_join(cons, NULL);
-
-    // Destroy semaphores
-    sem_destroy(&empty);
-    sem_destroy(&full);
-    sem_destroy(&mutex);
-
-    return 0;
-}
-
-Exp 8
-#include <stdio.h>
-#include <stdbool.h>
-
-int main() {
-    int n = 5; // processes
-    int m = 3; // resources
-
-    int alloc[5][3] = {
-        {0, 1, 0},
-        {2, 0, 0},
-        {3, 0, 2},
-        {2, 1, 1},
-        {0, 0, 2}
-    };
-
-    int max[5][3] = {
-        {7, 5, 3},
-        {3, 2, 2},
-        {9, 0, 2},
-        {2, 2, 2},
-        {4, 3, 3}
-    };
-
-    int avail[3] = {3, 3, 2};
-    int need[5][3];
-    int finish[5] = {0};
-    int safeSeq[5];
-    int index = 0;
-
-    // Calculate NEED matrix
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            need[i][j] = max[i][j] - alloc[i][j];
-        }
-    }
-
-    // Print NEED matrix (optional but useful)
-    printf("Need Matrix:\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            printf("%d ", need[i][j]);
-        }
-        printf("\n");
-    }
-
-    // Safety Algorithm
-    int count = 0;
-    while (count < n) {
-        int found = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (finish[i] == 0) {
-                int flag = 0;
-
-                for (int j = 0; j < m; j++) {
-                    if (need[i][j] > avail[j]) {
-                        flag = 1;
-                        break;
-                    }
-                }
-
-                if (flag == 0) {
-                    // Process can execute
-                    safeSeq[index++] = i;
-
-                    for (int j = 0; j < m; j++) {
-                        avail[j] += alloc[i][j];
-                    }
-
-                    finish[i] = 1;
-                    found = 1;
-                    count++;
-                }
-            }
-        }
-
-        // If no process was found in this pass → unsafe
-        if (found == 0) {
-            printf("\nSystem is NOT in a safe state\n");
-            return 0;
-        }
-    }
-
-    // If all processes finished
-    printf("\nSystem is in a SAFE state\n");
-    printf("Safe sequence: ");
-    for (int i = 0; i < n; i++) {
-        printf("P%d", safeSeq[i]);
-        if (i != n - 1)
-            printf(" -> ");
-    }
-    printf("\n");
-
-    return 0;
-}
-
-Exp 9
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <time.h>
-
-#define NUM_PHILOSOPHERS 5
-
-pthread_mutex_t chopsticks[NUM_PHILOSOPHERS];
-
-void* philosopher(void* num) {
-    int id = *(int*)num;
-
-    for (int i = 0; i < 3; i++) { // each eats 3 times
-        printf("Philosopher %d is thinking...\n", id);
-        fflush(stdout);
-        sleep(rand() % 2 + 1);  // random thinking time
-
-        // Deadlock avoidance: last philosopher picks right first
-        if (id == NUM_PHILOSOPHERS - 1) {
-            pthread_mutex_lock(&chopsticks[(id + 1) % NUM_PHILOSOPHERS]);
-            pthread_mutex_lock(&chopsticks[id]);
-        } else {
-            pthread_mutex_lock(&chopsticks[id]);
-            pthread_mutex_lock(&chopsticks[(id + 1) % NUM_PHILOSOPHERS]);
-        }
-
-        printf("Philosopher %d is EATING using chopsticks %d and %d\n",
-               id, id, (id + 1) % NUM_PHILOSOPHERS);
-        fflush(stdout);
-        sleep(rand() % 2 + 1);  // random eating time
-
-        pthread_mutex_unlock(&chopsticks[id]);
-        pthread_mutex_unlock(&chopsticks[(id + 1) % NUM_PHILOSOPHERS]);
-
-        printf("Philosopher %d finished eating\n", id);
-        fflush(stdout);
-    }
-
-    return NULL;
-}
-
-int main() {
-    pthread_t threads[NUM_PHILOSOPHERS];
-    int phil_ids[NUM_PHILOSOPHERS];
-
-    srand(time(NULL));  // seed random numbers
-
-    // Initialize mutexes
-    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
-        pthread_mutex_init(&chopsticks[i], NULL);
-    }
-
-    // Create threads
-    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
-        phil_ids[i] = i;
-        pthread_create(&threads[i], NULL, philosopher, &phil_ids[i]);
-    }
-
-    // Join threads
-    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
-        pthread_join(threads[i], NULL);
-    }
-
-    // Destroy mutexes
-    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
-        pthread_mutex_destroy(&chopsticks[i]);
-    }
-
-    return 0;
-}
-
-
-Exp 10
-#include <stdio.h>
-
-int main() {
-    int n, f, i, j = 0, k, avail, count = 0;
-    int pages[50], frames[10];
-
-    printf("Enter number of pages: ");
-    scanf("%d", &n);
-
-    printf("Enter the page reference string: ");
-    for (i = 0; i < n; i++)
-        scanf("%d", &pages[i]);
-
-    printf("Enter number of frames: ");
-    scanf("%d", &f);
-
-    // Initialize frames as empty
-    for (i = 0; i < f; i++)
-        frames[i] = -1;
-
-    printf("\nRef String\tFrames\n");
-
-    for (i = 0; i < n; i++) {
-        printf("%d\t\t", pages[i]);
-        avail = 0;
-
-        // Check for page hit
-        for (k = 0; k < f; k++) {
-            if (frames[k] == pages[i]) {
-                avail = 1;
-                break;
-            }
-        }
-
-        // Page fault
-        if (avail == 0) {
-            frames[j] = pages[i];
-            j = (j + 1) % f; // FIFO replacement
-            count++;
-
-            for (k = 0; k < f; k++) {
-                if (frames[k] != -1)
-                    printf("%d ", frames[k]);
-                else
-                    printf("- ");
-            }
-            printf("(PF)");
-        }
-        // Page hit
-        else {
-            for (k = 0; k < f; k++) {
-                if (frames[k] != -1)
-                    printf("%d ", frames[k]);
-                else
-                    printf("- ");
-            }
-            printf("(Hit)");
-        }
-
-        printf("\n");
-    }
-
-    printf("\nTotal Page Faults: %d\n", count);
-
-    return 0;
-}
-Exp 1
-Echo , read , write , cal , date , uname , pwd , cd , mkdir , touch , cat , rmdir , tail, head , tac , id , useradd
+print("R² Score :", round(score,4))
